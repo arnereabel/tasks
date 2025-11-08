@@ -139,9 +139,9 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ## 📂 File Locations
 
-- **Project**: `/home/arne/tasks/`
-- **Database**: `/home/arne/tasks/backend/data/tasks.db`
-- **Uploads**: `/home/arne/tasks/backend/uploads/`
+- **Project**: `/home/arner/tasks/`
+- **Database**: `/home/arner/tasks/backend/data/tasks.db`
+- **Uploads**: `/home/arner/tasks/backend/uploads/`
 - **Nginx Config**: `/etc/nginx/sites-available/tasks`
 - **SSL Certs**: `/etc/letsencrypt/live/tasks.arnereabel.com/`
 

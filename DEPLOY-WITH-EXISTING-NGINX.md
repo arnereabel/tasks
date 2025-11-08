@@ -145,10 +145,10 @@ You should see the Task Distribution System interface.
 Internet
     ↓
 Your Nginx (port 80/443)
-    ├─→ tasks.arnereabel.com/ → /home/arne/tasks/*.html (frontend files)
+    ├─→ tasks.arnereabel.com/ → /home/arner/tasks/*.html (frontend files)
     ├─→ tasks.arnereabel.com/api/ → tasks-backend:3001 (backend API)
     ├─→ tasks.arnereabel.com/socket.io/ → tasks-backend:3001 (WebSocket)
-    ├─→ tasks.arnereabel.com/uploads/ → /home/arne/tasks/backend/uploads/
+    ├─→ tasks.arnereabel.com/uploads/ → /home/arner/tasks/backend/uploads/
     └─→ [your other sites] → [other containers/services]
     
 Docker Network: robotics_deployment_proxy_network
@@ -158,10 +158,10 @@ Docker Network: robotics_deployment_proxy_network
 
 ## 📁 File Locations
 
-- **Frontend files**: `/home/arne/tasks/*.html`, `*.js`, `*.css`
+- **Frontend files**: `/home/arner/tasks/*.html`, `*.js`, `*.css`
 - **Backend container**: `tasks-backend` (on proxy network)
-- **Database**: `/home/arne/tasks/backend/data/tasks.db`
-- **Uploads**: `/home/arne/tasks/backend/data/uploads/`
+- **Database**: `/home/arner/tasks/backend/data/tasks.db`
+- **Uploads**: `/home/arner/tasks/backend/data/uploads/`
 - **Nginx config**: `/etc/nginx/sites-available/tasks`
 - **SSL certs**: `/etc/letsencrypt/live/tasks.arnereabel.com/`
 
@@ -229,8 +229,8 @@ Check:
 ### Frontend Files Not Loading
 
 Check:
-1. Files exist: `ls -la /home/arne/tasks/`
-2. Nginx has permission: `sudo -u www-data ls /home/arne/tasks/`
+1. Files exist: `ls -la /home/arner/tasks/`
+2. Nginx has permission: `sudo -u www-data ls /home/arner/tasks/`
 3. Nginx config root path is correct
 
 ### SSL Certificate Issues
@@ -270,7 +270,7 @@ curl http://tasks-backend:3001/api/health
 
 ### Check Disk Space
 ```bash
-df -h /home/arne/tasks/backend/data
+df -h /home/arner/tasks/backend/data
 ```
 
 ### Check Docker Resources

@@ -17,8 +17,8 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Check if running on VPS
-if [ "$USER" != "arne" ]; then
-    echo -e "${YELLOW}Warning: This script is designed to run as user 'arne'${NC}"
+if [ "$USER" != "arner" ]; then
+    echo -e "${YELLOW}Warning: This script is designed to run as user 'arner'${NC}"
     echo "Current user: $USER"
     read -p "Continue anyway? (y/n) " -n 1 -r
     echo
@@ -29,7 +29,7 @@ fi
 
 # Step 1: Navigate to project directory
 echo -e "${GREEN}[1/5] Navigating to project directory...${NC}"
-cd /home/arne/tasks
+cd /home/arner/tasks
 
 # Step 2: Pull latest changes (if already cloned)
 echo -e "${GREEN}[2/5] Pulling latest changes...${NC}"
