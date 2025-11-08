@@ -24,3 +24,7 @@ backend/node_modules/
 # Database and uploads
 backend/data/
 backend/uploads/
+
+# Environment files (keep .env.example in git)
+backend/.env
+.env
