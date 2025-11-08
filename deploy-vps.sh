@@ -46,7 +46,7 @@ echo -e "${GREEN}[4/5] Waiting for backend to start...${NC}"
 sleep 15
 
 # Check if backend is on the network
-if docker network inspect robotics_deployment_proxy_network | grep -q "tasks-backend"; then
+if docker network inspect proxy_network | grep -q "tasks-backend"; then
     echo "✓ Backend is connected to proxy network"
 else
     echo -e "${RED}✗ Backend is not on proxy network${NC}"
