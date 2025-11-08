@@ -74,8 +74,13 @@
         </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="api.js"></script>
     <script src="app.js"></script>
     <script>
+        // Initialize socket
+        initializeSocket();
+        
         // Get task and job ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const taskId = urlParams.get('id');

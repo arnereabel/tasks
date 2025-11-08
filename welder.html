@@ -39,8 +39,13 @@
         </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="api.js"></script>
     <script src="app.js"></script>
     <script>
+        // Initialize socket
+        initializeSocket();
+        
         // Get team ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const teamId = urlParams.get('team');

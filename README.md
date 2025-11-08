@@ -1,305 +1,385 @@
-# Task Distribution App
+# Task Distribution System
 
-A mobile-friendly web application for managing welding tasks and job distribution across teams. Designed specifically for smartphone use (optimized for Samsung S25 Ultra and similar devices).
+A web-based task management system for distributing welding and construction tasks across multiple teams with real-time updates, photo documentation, and progress tracking.
 
 ## Features
 
-- 📋 **Dashboard**: Overview of all active jobs with search and filtering
-- 🔧 **Job Details**: Complete job information with team assignments
-- 👥 **Team Views**: Individual pages for each team showing all their tasks
-- 📝 **Task Management**: Detailed task views with status tracking
-- 📸 **Photo Capture**: Take and store photos directly from your smartphone camera
-- 💬 **Notes System**: Add comments and notes to tasks for team communication
-- ✅ **Status Tracking**: Update task status (Pending/In Progress/Completed)
+- 📋 Job and task management
+- 👥 Multi-team assignment and tracking
+- 📸 Photo upload and documentation
+- 📝 Real-time notes and comments
+- 🔄 Live status updates via WebSocket
+- 📱 Mobile-friendly interface
+- 🔍 Search and filtering capabilities
+- 🎯 Priority-based task organization
+
+## Tech Stack
+
+### Frontend
+- HTML5, CSS3, JavaScript (Vanilla)
+- Socket.IO Client for real-time updates
+- Responsive design for mobile and desktop
+
+### Backend
+- Node.js + Express
+- Socket.IO for WebSocket communication
+- Sequelize ORM
+- SQLite database
+- Multer for file uploads
+
+### Deployment
+- Docker & Docker Compose
+- Nginx reverse proxy
+- Persistent volumes for data and uploads
+
+## Project Structure
+
+```
+app jelle/
+├── backend/
+│   ├── models/
+│   │   └── index.js          # Database models (Job, Task, Photo, Note)
+│   ├── routes/
+│   │   ├── jobs.js           # Job API endpoints
+│   │   └── tasks.js          # Task API endpoints
+│   ├── data/                 # SQLite database storage
+│   ├── uploads/              # Uploaded photos
+│   ├── server.js             # Express server setup
+│   ├── package.json          # Backend dependencies
+│   └── Dockerfile            # Backend container config
+├── index.html                # Dashboard page
+├── job.html                  # Job details page
+├── welder.html               # Team view page
+├── task.html                 # Task details page
+├── style.css                 # Global styles
+├── app.js                    # Frontend logic
+├── api.js                    # API client & Socket.IO
+├── data.json                 # Initial data structure
+├── docker-compose.yml        # Docker orchestration
+├── nginx.conf                # Nginx configuration
+└── README.md                 # This file
+```
 
 ## Getting Started
 
-### Quick Start
+### Prerequisites
 
-1. Open `index.html` in a web browser (or set up a local server - see below)
-2. The dashboard will display all active jobs
-3. Tap any job to see its details
-4. Navigate to team views or specific tasks
-5. Take photos and add notes as needed
+- Node.js 18+ (for local development)
+- Docker & Docker Compose (for production deployment)
+- Git
 
-### For Smartphones
+### Local Development
 
-#### Option 1: Using a Simple HTTP Server (Recommended)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/arnereabel/weldertasks.git
+   cd weldertasks
+   ```
 
-For the camera feature to work properly on smartphones, you need to serve the files over HTTP or HTTPS:
+2. **Install backend dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
 
-**Using Python:**
-```bash
-# Python 3
-python -m http.server 8000
+3. **Start the backend server**
+   ```bash
+   npm run dev
+   ```
+   The API will be available at `http://localhost:3001`
 
-# Python 2
-python -m SimpleHTTPServer 8000
+4. **Open the frontend**
+   - Open `index.html` in a web browser
+   - Or use a local server: `npx http-server -p 8080`
+
+### Docker Deployment
+
+1. **Build and start containers**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Check container status**
+   ```bash
+   docker-compose ps
+   ```
+
+3. **View logs**
+   ```bash
+   docker-compose logs -f
+   ```
+
+4. **Stop containers**
+   ```bash
+   docker-compose down
+   ```
+
+5. **Access the application**
+   - Frontend: `http://localhost`
+   - Backend API: `http://localhost:3001/api`
+   - Health Check: `http://localhost:3001/api/health`
+
+### Production Deployment
+
+For production deployment on a VPS or cloud server:
+
+1. **Clone the repository on your server**
+   ```bash
+   git clone https://github.com/arnereabel/weldertasks.git
+   cd weldertasks
+   ```
+
+2. **Configure environment (optional)**
+   - Update `CORS_ORIGIN` in `docker-compose.yml`
+   - Configure domain in `nginx.conf` if needed
+
+3. **Deploy with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Set up SSL (recommended)**
+   - Use Let's Encrypt with Certbot
+   - Or configure your cloud provider's SSL
+
+5. **Configure firewall**
+   ```bash
+   # Allow HTTP and HTTPS
+   sudo ufw allow 80/tcp
+   sudo ufw allow 443/tcp
+   ```
+
+## API Documentation
+
+### Jobs API
+
+#### Get All Jobs
+```
+GET /api/jobs
 ```
 
-**Using Node.js:**
-```bash
-# Install http-server globally
-npm install -g http-server
-
-# Run server
-http-server -p 8000
+#### Get Job by ID
+```
+GET /api/jobs/:id
 ```
 
-Then access the app at: `http://your-computer-ip:8000` from your smartphone
-
-#### Option 2: Deploy to a Web Server
-
-Upload all files to a web hosting service:
-- The files are static HTML/CSS/JS
-- No server-side processing required
-- Any basic web hosting will work
-- For production, use HTTPS for camera access
-
-### Network Setup for Testing
-
-1. Connect your computer and smartphone to the same Wi-Fi network
-2. Find your computer's local IP address:
-   - **Windows**: Run `ipconfig` in command prompt
-   - **macOS/Linux**: Run `ifconfig` or `ip addr`
-3. Start the HTTP server on your computer
-4. Open your smartphone browser and navigate to `http://[your-ip]:8000`
-
-## File Structure
-
+#### Create Job
 ```
-task-distribution-app/
-├── index.html          # Main dashboard page
-├── job.html           # Job detail page
-├── welder.html        # Team/welder view page
-├── task.html          # Task detail page with photos
-├── style.css          # Mobile-responsive styling
-├── app.js             # Application logic
-├── data.json          # Job and task data
-└── README.md          # This file
-```
+POST /api/jobs
+Content-Type: application/json
 
-## Data Structure
-
-### Adding New Jobs
-
-Edit `data.json` to add new jobs:
-
-```json
 {
-  "id": "job004",
-  "orderNumber": "ORD-2024-004",
-  "hal": "HAL D",
-  "plaats": "Position 2",
+  "orderNumber": "12345",
+  "hal": "HAL-1",
+  "plaats": "Section A",
   "fase": "Phase 1",
-  "tekMerk": "DWG-004-D",
+  "tekMerk": "DWG-001",
   "priority": "high",
-  "polDag": "2",
-  "prtDag": "1",
-  "prt": "2",
-  "pl": "1",
-  "metr": "0",
-  "remarks": "Special instructions here",
-  "tasks": [
-    {
-      "id": "task006",
-      "description": "Task description",
-      "assignedTo": "POL-dag",
-      "status": "pending",
-      "notes": [],
-      "photos": []
-    }
-  ]
+  "polDag": 2,
+  "prtDag": 1,
+  "prt": 0,
+  "pl": 0,
+  "metr": 0,
+  "remarks": "Special requirements"
 }
 ```
 
-### Team IDs
-
-- `POL-dag` - Polish Dayshift
-- `PRT-dag` - Portuguese Dayshift
-- `PRT` - Portuguese Evening
-- `PL` - Polish Evening
-- `METR` - Metrica Evening
-
-### Priority Levels
-
-- `high` - Red indicator, urgent tasks
-- `medium` - Yellow indicator, normal priority
-- `low` - Green indicator, can be scheduled
-
-### Task Status
-
-- `pending` - Not yet started
-- `in-progress` - Currently being worked on
-- `completed` - Finished
-
-## Using the App
-
-### Dashboard (Main Page)
-
-- **Search**: Use the search bar to find jobs by order number, location, or hall
-- **Filter**: Tap team buttons to filter jobs by assigned team
-- **View Job**: Tap any job card to see full details
-
-### Job Detail Page
-
-- **Overview**: See all job information at a glance
-- **Team Assignment**: View how many workers are assigned from each team
-- **Tasks**: List of all tasks for this job
-- **Team Links**: Quick navigation to see each team's tasks
-
-### Team/Welder View
-
-- **Task List**: All tasks assigned to the selected team
-- **Sorting**: Sort tasks by priority, order number, location, or status
-- **Cross-Job View**: See all tasks across all jobs for this team
-
-### Task Detail Page
-
-#### Taking Photos
-
-1. Tap "📷 Take Photo" to open your camera
-2. Take the photo
-3. Photo is automatically saved to the task
-4. Tap any photo to view it full-screen
-5. Add captions to photos for context
-6. Delete photos if needed
-
-#### Adding Notes
-
-1. Type your note in the text area
-2. Tap "Add Note"
-3. Notes are timestamped automatically
-4. All team members can see notes
-
-#### Updating Status
-
-1. Tap the status button that matches the task's current state
-2. Status updates immediately
-3. Status is visible in all views
-
-## Data Storage
-
-- **Base Data**: Stored in `data.json`
-- **Photos & Notes**: Stored in browser's LocalStorage
-- **Persistence**: Data persists between sessions on the same device
-- **Sharing**: To share data between devices, you'll need to implement a backend server
-
-### Important Notes
-
-- Photos are stored as base64 data in LocalStorage
-- LocalStorage has a limit (usually 5-10MB)
-- For many photos, consider implementing cloud storage
-- Clear browser data will reset photos and notes to original data.json
-
-## Browser Compatibility
-
-### Recommended Browsers
-
-- **Chrome/Edge**: Full support including camera
-- **Safari**: Full support (iOS 11+)
-- **Firefox**: Full support
-- **Samsung Internet**: Full support
-
-### Camera Requirements
-
-- HTTPS connection (for production)
-- Camera permission granted
-- Modern browser with getUserMedia API support
-
-## Customization
-
-### Changing Colors
-
-Edit `style.css` to customize the color scheme:
-
-```css
-:root {
-    --primary-color: #2563eb;    /* Main blue color */
-    --success-color: #10b981;     /* Green for completed */
-    --warning-color: #f59e0b;     /* Yellow for pending */
-    --danger-color: #ef4444;      /* Red for urgent */
-}
+#### Update Job
+```
+PUT /api/jobs/:id
+Content-Type: application/json
 ```
 
-### Adding More Teams
+#### Delete Job
+```
+DELETE /api/jobs/:id
+```
 
-1. Add team to `data.json` in the `teams` array:
-```json
+### Tasks API
+
+#### Get All Tasks
+```
+GET /api/tasks
+```
+
+#### Get Tasks by Team
+```
+GET /api/tasks/team/:teamId
+```
+
+#### Get Task by ID
+```
+GET /api/tasks/:id
+```
+
+#### Create Task
+```
+POST /api/tasks
+Content-Type: application/json
+
 {
-  "id": "NEW-TEAM",
-  "name": "Short Name",
-  "fullName": "Full Team Name"
+  "jobId": 1,
+  "description": "Weld beam connections",
+  "assignedTo": "POL-dag",
+  "status": "pending"
 }
 ```
 
-2. Update filter buttons in `index.html`
+#### Update Task Status
+```
+PUT /api/tasks/:id
+Content-Type: application/json
 
-### Modifying Layout
+{
+  "status": "in-progress"
+}
+```
 
-- Adjust grid layouts in `style.css`
-- Change responsive breakpoints for different screen sizes
-- Modify font sizes for better readability
+#### Upload Photo
+```
+POST /api/tasks/:id/photos
+Content-Type: multipart/form-data
+
+photo: [file]
+caption: "Photo description"
+```
+
+#### Add Note
+```
+POST /api/tasks/:id/notes
+Content-Type: application/json
+
+{
+  "content": "Note content here"
+}
+```
+
+### WebSocket Events
+
+The application uses Socket.IO for real-time updates:
+
+**Client → Server:**
+- `task:status` - Task status changed
+- `team:update` - Team information updated
+
+**Server → Client:**
+- `job:created` - New job created
+- `job:updated` - Job updated
+- `job:deleted` - Job deleted
+- `task:created` - New task created
+- `task:updated` - Task updated
+- `task:deleted` - Task deleted
+- `photo:uploaded` - Photo uploaded
+- `note:added` - Note added
+
+## Data Migration
+
+To migrate existing localStorage data to the backend:
+
+1. Open browser console on the frontend
+2. Run: `migrateLocalDataToBackend()`
+3. This will transfer all jobs, tasks, and notes to the database
+
+## Backup and Restore
+
+### Backup Database
+```bash
+docker exec tasks-backend tar czf /app/backup.tar.gz /app/data /app/uploads
+docker cp tasks-backend:/app/backup.tar.gz ./backup-$(date +%Y%m%d).tar.gz
+```
+
+### Restore Database
+```bash
+docker cp ./backup-YYYYMMDD.tar.gz tasks-backend:/app/backup.tar.gz
+docker exec tasks-backend tar xzf /app/backup.tar.gz -C /app
+docker-compose restart backend
+```
+
+## Maintenance
+
+### View Backend Logs
+```bash
+docker-compose logs -f backend
+```
+
+### View Frontend Logs
+```bash
+docker-compose logs -f frontend
+```
+
+### Restart Services
+```bash
+docker-compose restart
+```
+
+### Update Application
+```bash
+git pull origin main
+docker-compose down
+docker-compose build
+docker-compose up -d
+```
 
 ## Troubleshooting
 
-### Camera Not Working
+### Backend won't start
+- Check logs: `docker-compose logs backend`
+- Verify port 3001 is not in use: `netstat -tulpn | grep 3001`
+- Check database permissions in `backend/data/`
 
-- Ensure you're using HTTPS or localhost
-- Check browser permissions for camera access
-- Try a different browser
-- Restart the app and grant permissions again
+### WebSocket connection fails
+- Verify nginx WebSocket proxy configuration
+- Check browser console for connection errors
+- Ensure firewall allows WebSocket connections
 
-### Photos Not Saving
+### Photos not uploading
+- Check `backend/uploads/` directory permissions
+- Verify file size limits in `backend/routes/tasks.js`
+- Check available disk space
 
-- Check browser's LocalStorage isn't full
-- Ensure JavaScript is enabled
-- Try clearing browser cache and reloading
+### Database errors
+- Check SQLite database file integrity
+- Restore from backup if corrupted
+- Clear browser cache and localStorage
 
-### App Not Loading on Phone
+## Security Considerations
 
-- Verify your phone and computer are on the same network
-- Check firewall isn't blocking the port
-- Ensure the server is running
-- Try the computer's IP address instead of `localhost`
+- Change default CORS settings in production
+- Use HTTPS in production environments
+- Implement authentication if needed
+- Regularly backup database
+- Keep dependencies updated
+- Limit upload file sizes
+- Sanitize user inputs
 
-### Data Lost After Refresh
+## Contributing
 
-- Normal for demo mode - photos/notes reset to `data.json`
-- Implement a backend API for permanent storage
-- Or export LocalStorage data before clearing cache
-
-## Future Enhancements
-
-Potential improvements:
-
-1. **Backend Integration**: Save data to a database
-2. **User Authentication**: Login system for different roles
-3. **Real-time Sync**: Live updates across devices
-4. **Offline Mode**: Service worker for offline capability
-5. **Export Reports**: Generate PDF reports of completed work
-6. **Photo Compression**: Reduce storage requirements
-7. **Push Notifications**: Alert teams of new tasks
-8. **Time Tracking**: Log time spent on tasks
-
-## Converting Your Spreadsheet Data
-
-To convert your existing spreadsheet to the app format:
-
-1. Export your spreadsheet to CSV
-2. For each row, create a job object in `data.json`
-3. Break down tasks into the `tasks` array
-4. Assign appropriate team IDs and priorities
-5. Test the data in the app
-
-## Support
-
-For issues or questions:
-- Check this README
-- Review the browser console for errors
-- Verify all files are in the correct location
-- Ensure you're running a local server for camera access
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-This project is provided as-is for internal use.
+This project is proprietary software. All rights reserved.
+
+## Support
+
+For issues and questions:
+- Open an issue on GitHub
+- Contact the development team
+
+## Version History
+
+### v2.0.0 (Current)
+- Added backend API with Express and SQLite
+- Implemented real-time updates with Socket.IO
+- Added photo upload to server
+- Containerized with Docker
+- Added nginx reverse proxy
+
+### v1.0.0
+- Initial release with localStorage
+- Basic task management
+- Client-side only implementation
