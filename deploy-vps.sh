@@ -1,5 +1,6 @@
 #!/bin/bash
 # VPS Deployment Script for Task Distribution System
+# For use with existing nginx infrastructure
 # Run this on your VPS at 46.62.216.163
 
 set -e  # Exit on error
@@ -12,11 +13,12 @@ echo ""
 # Color codes
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Check if running on VPS
-if [ "$USER" != "arner" ]; then
-    echo -e "${YELLOW}Warning: This script is designed to run as user 'arner'${NC}"
+if [ "$USER" != "arne" ]; then
+    echo -e "${YELLOW}Warning: This script is designed to run as user 'arne'${NC}"
     echo "Current user: $USER"
     read -p "Continue anyway? (y/n) " -n 1 -r
     echo
@@ -25,80 +27,78 @@ if [ "$USER" != "arner" ]; then
     fi
 fi
 
-# Step 1: Clone or update repository
-echo -e "${GREEN}[1/7] Cloning/updating repository...${NC}"
-cd /home/arner
-if [ -d "tasks" ]; then
-    echo "Repository exists, pulling latest changes..."
-    cd tasks
-    git pull origin main
-else
-    echo "Cloning repository..."
-    git clone https://github.com/arnereabel/tasks.git
-    cd tasks
-fi
+# Step 1: Navigate to project directory
+echo -e "${GREEN}[1/5] Navigating to project directory...${NC}"
+cd /home/arne/tasks
 
-# Step 2: Configure nginx for subdomain
-echo -e "${GREEN}[2/7] Configuring nginx for tasks.arnereabel.com...${NC}"
-sudo cp nginx-subdomain.conf /etc/nginx/sites-available/tasks
-sudo ln -sf /etc/nginx/sites-available/tasks /etc/nginx/sites-enabled/tasks
-sudo nginx -t
+# Step 2: Pull latest changes (if already cloned)
+echo -e "${GREEN}[2/5] Pulling latest changes...${NC}"
+git pull origin main
 
 # Step 3: Deploy with Docker Compose
-echo -e "${GREEN}[3/7] Deploying with Docker Compose...${NC}"
+echo -e "${GREEN}[3/5] Deploying backend with Docker Compose...${NC}"
 docker-compose -f docker-compose.prod.yml down 2>/dev/null || true
 docker-compose -f docker-compose.prod.yml build --no-cache
 docker-compose -f docker-compose.prod.yml up -d
 
 # Step 4: Wait for services to be healthy
-echo -e "${GREEN}[4/7] Waiting for services to start...${NC}"
-sleep 10
+echo -e "${GREEN}[4/5] Waiting for backend to start...${NC}"
+sleep 15
+
+# Check if backend is on the network
+if docker network inspect robotics_deployment_proxy_network | grep -q "tasks-backend"; then
+    echo "✓ Backend is connected to proxy network"
+else
+    echo -e "${RED}✗ Backend is not on proxy network${NC}"
+    exit 1
+fi
 
 # Step 5: Check service health
-echo -e "${GREEN}[5/7] Checking service health...${NC}"
+echo -e "${GREEN}[5/5] Checking backend health...${NC}"
 if docker ps | grep -q "tasks-backend"; then
     echo "✓ Backend container is running"
+    
+    # Try to hit the health endpoint
+    sleep 5
+    if docker exec tasks-backend wget -q -O- http://localhost:3001/api/health > /dev/null 2>&1; then
+        echo "✓ Backend health check passed"
+    else
+        echo -e "${YELLOW}⚠ Backend health check failed (may need more time to start)${NC}"
+    fi
 else
-    echo "✗ Backend container is not running"
+    echo -e "${RED}✗ Backend container is not running${NC}"
     docker logs tasks-backend --tail 50
     exit 1
 fi
 
-if docker ps | grep -q "tasks-frontend"; then
-    echo "✓ Frontend container is running"
-else
-    echo "✗ Frontend container is not running"
-    docker logs tasks-frontend --tail 50
-    exit 1
-fi
-
-# Step 6: Reload nginx
-echo -e "${GREEN}[6/7] Reloading nginx...${NC}"
-sudo systemctl reload nginx
-
-# Step 7: Setup SSL with certbot
-echo -e "${GREEN}[7/7] Setting up SSL certificate...${NC}"
-if [ ! -f "/etc/letsencrypt/live/tasks.arnereabel.com/fullchain.pem" ]; then
-    echo "Installing SSL certificate..."
-    sudo certbot --nginx -d tasks.arnereabel.com --non-interactive --agree-tos -m your-email@example.com
-else
-    echo "SSL certificate already exists, renewing if needed..."
-    sudo certbot renew --quiet
-fi
-
 echo ""
 echo "====================================="
-echo -e "${GREEN}Deployment Complete!${NC}"
+echo -e "${GREEN}Backend Deployment Complete!${NC}"
 echo "====================================="
 echo ""
-echo "Your application is now running at:"
-echo "  HTTP:  http://tasks.arnereabel.com"
-echo "  HTTPS: https://tasks.arnereabel.com"
+echo "⚠️  IMPORTANT: Manual nginx configuration required!"
 echo ""
-echo "To view logs:"
-echo "  Backend:  docker logs -f tasks-backend"
-echo "  Frontend: docker logs -f tasks-frontend"
+echo "The backend is now running on the proxy network."
+echo "To complete deployment, you need to:"
 echo ""
-echo "To restart services:"
+echo "1. Copy nginx-integration.conf to your nginx config:"
+echo "   sudo cp nginx-integration.conf /etc/nginx/sites-available/tasks"
+echo ""
+echo "2. Enable the site:"
+echo "   sudo ln -sf /etc/nginx/sites-available/tasks /etc/nginx/sites-enabled/tasks"
+echo ""
+echo "3. Test nginx configuration:"
+echo "   sudo nginx -t"
+echo ""
+echo "4. Reload nginx:"
+echo "   sudo systemctl reload nginx"
+echo ""
+echo "5. Setup SSL (if not already done):"
+echo "   sudo certbot --nginx -d tasks.arnereabel.com"
+echo ""
+echo "To view backend logs:"
+echo "  docker logs -f tasks-backend"
+echo ""
+echo "To restart backend:"
 echo "  docker-compose -f docker-compose.prod.yml restart"
 echo ""
