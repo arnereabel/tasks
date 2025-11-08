@@ -1,0 +1,122 @@
+{
+  "jobs": [
+    {
+      "id": "job001",
+      "orderNumber": "ORD-2024-001",
+      "hal": "HAL A",
+      "plaats": "Position 1",
+      "fase": "Phase 1",
+      "tekMerk": "DWG-001-A",
+      "priority": "high",
+      "polDag": "4",
+      "prtDag": "2",
+      "prt": "3",
+      "pl": "2",
+      "metr": "1",
+      "remarks": "Urgent welding work required",
+      "tasks": [
+        {
+          "id": "task001",
+          "description": "Main structural welding",
+          "assignedTo": "POL-dag",
+          "status": "in-progress",
+          "notes": [],
+          "photos": []
+        },
+        {
+          "id": "task002",
+          "description": "Secondary beam connections",
+          "assignedTo": "PRT-dag",
+          "status": "pending",
+          "notes": [],
+          "photos": []
+        }
+      ]
+    },
+    {
+      "id": "job002",
+      "orderNumber": "ORD-2024-002",
+      "hal": "HAL B",
+      "plaats": "Position 3",
+      "fase": "Phase 2",
+      "tekMerk": "DWG-002-B",
+      "priority": "medium",
+      "polDag": "2",
+      "prtDag": "3",
+      "prt": "2",
+      "pl": "1",
+      "metr": "2",
+      "remarks": "Check specifications before starting",
+      "tasks": [
+        {
+          "id": "task003",
+          "description": "Column welding",
+          "assignedTo": "METR",
+          "status": "pending",
+          "notes": [],
+          "photos": []
+        },
+        {
+          "id": "task004",
+          "description": "Floor plate installation",
+          "assignedTo": "PRT",
+          "status": "pending",
+          "notes": [],
+          "photos": []
+        }
+      ]
+    },
+    {
+      "id": "job003",
+      "orderNumber": "ORD-2024-003",
+      "hal": "HAL C",
+      "plaats": "Position 5",
+      "fase": "Phase 1",
+      "tekMerk": "DWG-003-C",
+      "priority": "low",
+      "polDag": "1",
+      "prtDag": "1",
+      "prt": "1",
+      "pl": "1",
+      "metr": "1",
+      "remarks": "Standard procedure applies",
+      "tasks": [
+        {
+          "id": "task005",
+          "description": "Bracket welding",
+          "assignedTo": "PL",
+          "status": "completed",
+          "notes": ["Completed ahead of schedule"],
+          "photos": []
+        }
+      ]
+    }
+  ],
+  "teams": [
+    {
+      "id": "POL-dag",
+      "name": "Polish Dayshift",
+      "fullName": "Polish Team - Day Shift"
+    },
+    {
+      "id": "PRT-dag",
+      "name": "Portuguese Dayshift",
+      "fullName": "Portuguese Team - Day Shift"
+    },
+    {
+      "id": "PRT",
+      "name": "Portuguese Evening",
+      "fullName": "Portuguese Team - Evening Shift"
+    },
+    {
+      "id": "PL",
+      "name": "Polish Evening",
+      "fullName": "Polish Team - Evening Shift"
+    },
+    {
+      "id": "METR",
+      "name": "Metrica Evening",
+      "fullName": "Metrica Team - Evening Shift"
+    }
+  ]
+}

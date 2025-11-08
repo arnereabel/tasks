@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team View</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+            <h1 id="teamTitle">Team View</h1>
+            <p class="subtitle" id="teamSubtitle"></p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number" id="teamTaskCount">0</span>
+                <span class="stat-label">Assigned Tasks</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="teamJobCount">0</span>
+                <span class="stat-label">Active Jobs</span>
+            </div>
+        </div>
+
+        <div class="filter-sort">
+            <select id="sortSelect" class="sort-select">
+                <option value="priority">Sort by Priority</option>
+                <option value="order">Sort by Order Number</option>
+                <option value="location">Sort by Location</option>
+                <option value="status">Sort by Status</option>
+            </select>
+        </div>
+
+        <div id="teamTasksList" class="tasks-list">
+            <!-- Tasks will be loaded here -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Get team ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamId = urlParams.get('team');
+        const jobId = urlParams.get('job');
+        
+        if (teamId) {
+            loadTeamView(teamId, jobId);
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Distribution - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Task Distribution</h1>
+            <p class="subtitle">Job Overview Dashboard</p>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Search jobs..." />
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number" id="totalJobs">0</span>
+                <span class="stat-label">Total Jobs</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="totalTasks">0</span>
+                <span class="stat-label">Total Tasks</span>
+            </div>
+        </div>
+
+        <div class="team-filter">
+            <button class="filter-btn active" data-team="all">All Teams</button>
+            <button class="filter-btn" data-team="POL-dag">Polish Day</button>
+            <button class="filter-btn" data-team="PRT-dag">Port. Day</button>
+            <button class="filter-btn" data-team="PRT">Port. Eve</button>
+            <button class="filter-btn" data-team="PL">Polish Eve</button>
+            <button class="filter-btn" data-team="METR">Metrica Eve</button>
+        </div>
+
+        <div id="jobsList" class="jobs-list">
+            <!-- Jobs will be loaded here by JavaScript -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize dashboard
+        loadDashboard();
+    </script>
+</body>
+</html>
