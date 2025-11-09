@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Task</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-section {
+            background-color: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+        
+        .radio-option:has(input:checked) {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            background-color: var(--card-background);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .form-actions button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+            <h1>Add New Task</h1>
+        </header>
+
+        <!-- Step 1: Select or Create Job -->
+        <div class="form-section" id="jobSection">
+            <h2>Step 1: Job Selection</h2>
+            
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="existingJob" name="jobOption" value="existing" checked>
+                    <label for="existingJob">Select Existing Job</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="newJob" name="jobOption" value="new">
+                    <label for="newJob">Create New Job</label>
+                </div>
+            </div>
+
+            <!-- Existing Job Selection -->
+            <div id="existingJobForm">
+                <div class="form-group">
+                    <label for="jobSelect">Select Job</label>
+                    <select id="jobSelect" required>
+                        <option value="">Loading jobs...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- New Job Form -->
+            <div id="newJobForm" class="hidden">
+                <div class="form-group">
+                    <label for="orderNumber">Order Number *</label>
+                    <input type="text" id="orderNumber" name="orderNumber">
+                </div>
+                <div class="form-group">
+                    <label for="hal">Hall *</label>
+                    <input type="text" id="hal" name="hal">
+                </div>
+                <div class="form-group">
+                    <label for="plaats">Place *</label>
+                    <input type="text" id="plaats" name="plaats">
+                </div>
+                <div class="form-group">
+                    <label for="fase">Phase *</label>
+                    <input type="text" id="fase" name="fase">
+                </div>
+                <div class="form-group">
+                    <label for="tekMerk">Drawing/Mark *</label>
+                    <input type="text" id="tekMerk" name="tekMerk">
+                </div>
+                <div class="form-group">
+                    <label for="jobPriority">Priority</label>
+                    <select id="jobPriority" name="priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="polDag">Polish Dayshift</label>
+                    <input type="number" id="polDag" name="polDag" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="prtDag">Portuguese Dayshift</label>
+                    <input type="number" id="prtDag" name="prtDag" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="prt">Portuguese Evening</label>
+                    <input type="number" id="prt" name="prt" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="pl">Polish Evening</label>
+                    <input type="number" id="pl" name="pl" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="metr">Metrica Evening</label>
+                    <input type="number" id="metr" name="metr" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea id="remarks" name="remarks" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Create Task -->
+        <div class="form-section" id="taskSection">
+            <h2>Step 2: Task Details</h2>
+            
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="taskDescription">Task Description *</label>
+                    <textarea id="taskDescription" name="description" rows="3" required placeholder="Describe the welding task..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="assignedTo">Assign To Team *</label>
+                    <select id="assignedTo" name="assignedTo" required>
+                        <option value="">Select Team...</option>
+                        <option value="POL-dag">Polish Dayshift</option>
+                        <option value="PRT-dag">Portuguese Dayshift</option>
+                        <option value="PRT">Portuguese Evening</option>
+                        <option value="PL">Polish Evening</option>
+                        <option value="METR">Metrica Evening</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskPriority">Task Priority *</label>
+                    <select id="taskPriority" name="priority" required>
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        let existingJobs = [];
+        let selectedJobId = null;
+
+        // Load existing jobs
+        async function loadJobs() {
+            try {
+                existingJobs = await JobAPI.getAll();
+                const jobSelect = document.getElementById('jobSelect');
+                
+                if (existingJobs.length === 0) {
+                    jobSelect.innerHTML = '<option value="">No jobs available - Create a new job</option>';
+                } else {
+                    jobSelect.innerHTML = '<option value="">Select a job...</option>' + 
+                        existingJobs.map(job => 
+                            `<option value="${job.id}">${job.orderNumber} - ${job.hal} ${job.plaats}</option>`
+                        ).join('');
+                }
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                document.getElementById('jobSelect').innerHTML = '<option value="">Error loading jobs</option>';
+            }
+        }
+
+        // Toggle between existing and new job forms
+        document.querySelectorAll('input[name="jobOption"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const existingForm = document.getElementById('existingJobForm');
+                const newForm = document.getElementById('newJobForm');
+                
+                if (e.target.value === 'existing') {
+                    existingForm.classList.remove('hidden');
+                    newForm.classList.add('hidden');
+                } else {
+                    existingForm.classList.add('hidden');
+                    newForm.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Handle job selection
+        document.getElementById('jobSelect').addEventListener('change', (e) => {
+            selectedJobId = e.target.value;
+        });
+
+        // Handle form submission
+        document.getElementById('taskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const jobOption = document.querySelector('input[name="jobOption"]:checked').value;
+                let jobId = selectedJobId;
+
+                // Create new job if needed
+                if (jobOption === 'new') {
+                    const jobData = {
+                        orderNumber: document.getElementById('orderNumber').value,
+                        hal: document.getElementById('hal').value,
+                        plaats: document.getElementById('plaats').value,
+                        fase: document.getElementById('fase').value,
+                        tekMerk: document.getElementById('tekMerk').value,
+                        priority: document.getElementById('jobPriority').value,
+                        polDag: parseInt(document.getElementById('polDag').value),
+                        prtDag: parseInt(document.getElementById('prtDag').value),
+                        prt: parseInt(document.getElementById('prt').value),
+                        pl: parseInt(document.getElementById('pl').value),
+                        metr: parseInt(document.getElementById('metr').value),
+                        remarks: document.getElementById('remarks').value
+                    };
+
+                    const newJob = await JobAPI.create(jobData);
+                    jobId = newJob.id;
+                } else if (!jobId) {
+                    alert('Please select a job first');
+                    return;
+                }
+
+                // Create task
+                const taskData = {
+                    jobId: jobId,
+                    description: document.getElementById('taskDescription').value,
+                    assignedTo: document.getElementById('assignedTo').value,
+                    status: 'pending'
+                };
+
+                const newTask = await TaskAPI.create(taskData);
+                
+                // Navigate to task detail page
+                window.location.href = `task.html?id=${newTask.id}&job=${jobId}`;
+                
+            } catch (error) {
+                console.error('Error creating task:', error);
+                alert('Failed to create task. Please try again.');
+            }
+        });
+
+        // Initialize
+        loadJobs();
+    </script>
+</body>
+</html>
