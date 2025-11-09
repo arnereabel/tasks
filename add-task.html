@@ -165,38 +165,6 @@
                     <label for="tekMerk">Drawing/Mark *</label>
                     <input type="text" id="tekMerk" name="tekMerk">
                 </div>
-                <div class="form-group">
-                    <label for="jobPriority">Priority</label>
-                    <select id="jobPriority" name="priority">
-                        <option value="low">Low</option>
-                        <option value="medium" selected>Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="polDag">Polish Dayshift</label>
-                    <input type="number" id="polDag" name="polDag" value="0" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="prtDag">Portuguese Dayshift</label>
-                    <input type="number" id="prtDag" name="prtDag" value="0" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="prt">Portuguese Evening</label>
-                    <input type="number" id="prt" name="prt" value="0" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="pl">Polish Evening</label>
-                    <input type="number" id="pl" name="pl" value="0" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="metr">Metrica Evening</label>
-                    <input type="number" id="metr" name="metr" value="0" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="remarks">Remarks</label>
-                    <textarea id="remarks" name="remarks" rows="3"></textarea>
-                </div>
             </div>
         </div>
 
@@ -295,19 +263,22 @@
 
                 // Create new job if needed
                 if (jobOption === 'new') {
+                    // Get task priority to use for job priority
+                    const taskPriority = document.getElementById('taskPriority').value;
+                    
                     const jobData = {
                         orderNumber: document.getElementById('orderNumber').value,
                         hal: document.getElementById('hal').value,
                         plaats: document.getElementById('plaats').value,
                         fase: document.getElementById('fase').value,
                         tekMerk: document.getElementById('tekMerk').value,
-                        priority: document.getElementById('jobPriority').value,
-                        polDag: parseInt(document.getElementById('polDag').value),
-                        prtDag: parseInt(document.getElementById('prtDag').value),
-                        prt: parseInt(document.getElementById('prt').value),
-                        pl: parseInt(document.getElementById('pl').value),
-                        metr: parseInt(document.getElementById('metr').value),
-                        remarks: document.getElementById('remarks').value
+                        priority: taskPriority,
+                        polDag: 0,
+                        prtDag: 0,
+                        prt: 0,
+                        pl: 0,
+                        metr: 0,
+                        remarks: ''
                     };
 
                     const newJob = await JobAPI.create(jobData);
