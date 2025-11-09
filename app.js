@@ -42,6 +42,13 @@ function saveData() {
     localStorage.setItem('appData', JSON.stringify(appData));
 }
 
+function onJobCreated(job) {
+    if (appData && appData.jobs) {
+        appData.jobs.unshift(job);
+        renderJobs(appData.jobs);
+    }
+}
+
 // DASHBOARD FUNCTIONS
 async function loadDashboard() {
     const data = await loadData();
@@ -418,8 +425,8 @@ async function loadTaskDetails(taskId, jobId) {
         </div>
     `;
     
-    // Render photos
-    renderPhotos(task.photos || []);
+    // Load photos from backend
+    loadTaskPhotos();
     
     // Render notes
     renderNotes(task.notes || []);
@@ -468,42 +475,51 @@ function renderNotes(notes) {
 }
 
 // PHOTO FUNCTIONS
-function handlePhotoUpload(event) {
+async function handlePhotoUpload(event) {
     const files = event.target.files;
     if (!files || files.length === 0) return;
     
-    Array.from(files).forEach(file => {
+    // Upload each file to the backend
+    for (const file of Array.from(files)) {
         if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                addPhoto(e.target.result);
-            };
-            reader.readAsDataURL(file);
+            try {
+                await TaskAPI.uploadPhoto(currentTaskId, file, '');
+                console.log('Photo uploaded successfully');
+            } catch (error) {
+                console.error('Failed to upload photo:', error);
+                alert('Failed to upload photo. Please try again.');
+            }
         }
-    });
+    }
+    
+    // Reload photos after upload
+    await loadTaskPhotos();
     
     // Clear the input
     event.target.value = '';
 }
 
-function addPhoto(imageData) {
-    if (!currentTaskId || !currentJobId) return;
+async function loadTaskPhotos() {
+    if (!currentTaskId) return;
     
-    const job = appData.jobs.find(j => j.id === currentJobId);
-    const task = job.tasks.find(t => t.id === currentTaskId);
-    
-    if (!task.photos) {
-        task.photos = [];
+    try {
+        const photos = await TaskAPI.getPhotos(currentTaskId);
+        const job = appData.jobs.find(j => j.id === currentJobId);
+        const task = job.tasks.find(t => t.id === currentTaskId);
+        
+        // Update local data with photos from backend
+        task.photos = photos.map(photo => ({
+            id: photo.id,
+            data: photo.path,
+            caption: photo.caption,
+            timestamp: photo.createdAt
+        }));
+        
+        renderPhotos(task.photos);
+    } catch (error) {
+        console.error('Failed to load photos:', error);
+        renderPhotos([]);
     }
-    
-    task.photos.push({
-        data: imageData,
-        caption: '',
-        timestamp: new Date().toISOString()
-    });
-    
-    saveData();
-    renderPhotos(task.photos);
 }
 
 function openPhotoModal(index) {
@@ -528,33 +544,43 @@ function closePhotoModal() {
     currentPhotoIndex = null;
 }
 
-function savePhotoCaption() {
+async function savePhotoCaption() {
     if (currentPhotoIndex === null) return;
     
     const job = appData.jobs.find(j => j.id === currentJobId);
     const task = job.tasks.find(t => t.id === currentTaskId);
+    const photo = task.photos[currentPhotoIndex];
     const caption = document.getElementById('photoCaptionInput').value;
     
-    task.photos[currentPhotoIndex].caption = caption;
-    
-    saveData();
-    renderPhotos(task.photos);
-    closePhotoModal();
+    try {
+        await TaskAPI.updatePhotoCaption(photo.id, caption);
+        photo.caption = caption;
+        renderPhotos(task.photos);
+        closePhotoModal();
+    } catch (error) {
+        console.error('Failed to update caption:', error);
+        alert('Failed to update caption. Please try again.');
+    }
 }
 
-function deletePhoto() {
+async function deletePhoto() {
     if (currentPhotoIndex === null) return;
     
     if (!confirm('Are you sure you want to delete this photo?')) return;
     
     const job = appData.jobs.find(j => j.id === currentJobId);
     const task = job.tasks.find(t => t.id === currentTaskId);
+    const photo = task.photos[currentPhotoIndex];
     
-    task.photos.splice(currentPhotoIndex, 1);
-    
-    saveData();
-    renderPhotos(task.photos);
-    closePhotoModal();
+    try {
+        await TaskAPI.deletePhoto(photo.id);
+        task.photos.splice(currentPhotoIndex, 1);
+        renderPhotos(task.photos);
+        closePhotoModal();
+    } catch (error) {
+        console.error('Failed to delete photo:', error);
+        alert('Failed to delete photo. Please try again.');
+    }
 }
 
 // NOTES FUNCTIONS
